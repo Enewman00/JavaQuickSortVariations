@@ -21,6 +21,8 @@ the fourth is the filename to store sorted array.
 import java.util.Random;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.lang.Math;
+
 
 public class QuickSorter
 {
@@ -43,12 +45,95 @@ public class QuickSorter
         long startTime = System.nanoTime();
 
         // TODO implement timedQuickSort(ArrayList<E>, PivotStrategy)
+        //pick pivot
+        int pivotIndex = pickPivotIndex(list, strategy);
+
 
         long finishTime = System.nanoTime();
         Duration elapsedTime = Duration.ofNanos(finishTime - startTime);
 
         return elapsedTime;
     }
+
+
+    //quicksort helper functions
+    private static <E extends Comparable<E>> int pickPivotIndex(ArrayList<E> list, PivotStrategy strategy)
+    {
+        
+        // if it's the first element, just use index 0
+        if (strategy == PivotStrategy.RANDOM_ELEMENT)
+        {
+            return (int) Math.random() * (list.size() - 1);
+        }
+        if (strategy == PivotStrategy.MEDIAN_OF_THREE_RANDOM_ELEMENTS)
+        {
+            //get three different elements
+            int first = (int) Math.random() * (list.size() - 1);
+
+            //keep looking for a second element that does not equal the first one
+            do
+            {
+                int second = (int) Math.random() * (list.size() - 1);
+            }
+            while (second == first);
+
+            //keep looking for a third element that does not equal the first two
+            do
+            {
+                int third = (int) Math.random() * (list.size() - 1);
+            }
+            while (third == first || third == second);
+
+
+            //now the three elements are picked...
+            //return the median of the three
+            if ((list.get(first).compareTo(list.get(second)) < 0 && list.get(second).compareTo(list.get(third)) < 0) || (list.get(third).compareTo(list.get(second)) < 0 && list.get(second).compareTo(list.get(first)) < 0))
+            {
+                return second;
+            }
+
+            if ((list.get(second).compareTo(list.get(first)) < 0 && list.get(first).compareTo(list.get(third)) < 0) || (list.get(third).compareTo(list.get(first)) < 0 && list.get(first).compareTo(list.get(second)) < 0))
+            {
+                return first;
+            }
+
+            else
+            {
+                return third;
+            }
+        }
+        //median of the first element, the middle element, and the last element
+        if (strategy == PivotStrategy.MEDIAN_OF_THREE_ELEMENTS)
+        {
+            int first = 0;
+            int second = (list.size() - 1) / 2;
+            int third = list.size() - 1;
+
+
+            //now the three elements are picked...
+            //return the median of the three
+            //now the three elements are picked...
+            //return the median of the three
+            if ((list.get(first).compareTo(list.get(second)) < 0 && list.get(second).compareTo(list.get(third)) < 0) || (list.get(third).compareTo(list.get(second)) < 0 && list.get(second).compareTo(list.get(first)) < 0))
+            {
+                return second;
+            }
+
+            if ((list.get(second).compareTo(list.get(first)) < 0 && list.get(first).compareTo(list.get(third)) < 0) || (list.get(third).compareTo(list.get(first)) < 0 && list.get(first).compareTo(list.get(second)) < 0))
+            {
+                return first;
+            }
+
+            else
+            {
+                return third;
+            }
+        }
+        //(else) if it's the first element, just use index 0
+        return 0;
+    }
+
+
 
     //if negative input, throw IllegalArgumentException
     public static ArrayList<Integer> generateRandomList(int size)

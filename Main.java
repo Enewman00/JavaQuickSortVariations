@@ -19,9 +19,11 @@ the fourth is the filename to store sorted array.
 import java.util.Random;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.io.PrintWriter;
+import java.io.File;
 
 
-public class QuickSorter
+public class Main
 {
     public static void main(String[] args)
     {
@@ -31,6 +33,30 @@ public class QuickSorter
         //create new arrayList using quickSorter
         ArrayList<Integer> toSort = QuickSorter.generateRandomList(size);
 
+        //record unsorted array into unsorted.txt
+        // file output
+        try
+        {
+            File output_file = new File(args[2]);
+            PrintWriter unsortedOut;
+            unsortedOut = new PrintWriter(output_file);
+            toSort.forEach(n -> unsortedOut.println(n));
+            unsortedOut.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println("Exception: " + e);
+        }
+        //unsortedOut.println();
+        
+        //print the unsorted array to unsorted.txt
+        
+
+        //Save duration of sort using FIRST_ELEMENT,RANDOM_ELEMENT, MEDIAN_OF_THREE_RANDOM_ELEMENTS, MEDIAN_OF_THREE_ELEMENTS
+        // Duration test = timedQuickSort(toSort, FIRST_ELEMENT);
+        // Duration test2 = timedQuickSort(toSort, RANDOM_ELEMENT);
+        // Duration test3 = timedQuickSort(toSort, MEDIAN_OF_THREE_RANDOM_ELEMENTS);
+        // Duration test4 = timedQuickSort(toSort, MEDIAN_OF_THREE_ELEMENTS);
 
 
     }
