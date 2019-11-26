@@ -42,11 +42,13 @@ public class QuickSorter
     //Remember the quicksort will use the recursive strategy and for small array (<20 elements) use insertion sort methodology. 
     public static <E extends Comparable<E>> Duration timedQuickSort(ArrayList<E> list, PivotStrategy strategy)
     {
-        long startTime = System.nanoTime();
-
-        // TODO implement timedQuickSort(ArrayList<E>, PivotStrategy)
         //pick pivot
         int pivotIndex = pickPivotIndex(list, strategy);
+        
+        //start the timer
+        long startTime = System.nanoTime();
+
+        //recursively sort
 
 
         long finishTime = System.nanoTime();
@@ -55,6 +57,19 @@ public class QuickSorter
         return elapsedTime;
     }
 
+    //partition oon pivot(
+    private static void partition()
+    {
+        // https://javarevisited.blogspot.com/2014/08/quicksort-sorting-algorithm-in-java-in-place-example.html
+    }
+
+    //swap function to swap two elements in the arraylist
+    private static void swapElements(ArrayList<E> list, int indexOne, int indexTwo)
+    {
+        E temp = list.get(indexOne);
+        list.set(indexOne, list.get(indexTwo));
+        list.set(indexTwo, temp);
+    }
 
     //quicksort helper functions
     private static <E extends Comparable<E>> int pickPivotIndex(ArrayList<E> list, PivotStrategy strategy)

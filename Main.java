@@ -32,28 +32,57 @@ public class Main
 
         //create new arrayList using quickSorter
         ArrayList<Integer> toSort = QuickSorter.generateRandomList(size);
+        //create 3 copies of it
+        ArrayList<Integer> toSortRandom = toSort.clone();
+        ArrayList<Integer> toSortMedianRandom = toSort.clone();
+        ArrayList<Integer> toSortMedian = toSort.clone();
 
         //record unsorted array into unsorted.txt
         // file output
         try
         {
+            //open unsorted.txt (in args) for output
             File output_file = new File(args[2]);
             PrintWriter unsortedOut;
             unsortedOut = new PrintWriter(output_file);
+
+            //for each item in the arraylist, output it to the file.
             toSort.forEach(n -> unsortedOut.println(n));
             unsortedOut.close();
         }
         catch (Exception e)
         {
             System.out.println("Exception: " + e);
-        }
-        //unsortedOut.println();
-        
-        //print the unsorted array to unsorted.txt
+        }        
         
 
         //Save duration of sort using FIRST_ELEMENT,RANDOM_ELEMENT, MEDIAN_OF_THREE_RANDOM_ELEMENTS, MEDIAN_OF_THREE_ELEMENTS
-        // Duration test = timedQuickSort(toSort, FIRST_ELEMENT);
+        //sort with first element
+        Duration test = timedQuickSort(toSort, FIRST_ELEMENT);
+        
+
+
+
+        //output toSort (should be sorted now) to sorted.txt
+        try
+        {
+            //open unsorted.txt (in args) for output
+            File output_file = new File(args[3]);
+            PrintWriter sortedOut;
+            sortedOut = new PrintWriter(output_file);
+
+            //for each item in the arraylist, output it to the file.
+            toSort.forEach(n -> sortedOut.println(n));
+            sortedOut.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println("Exception: " + e);
+        }   
+
+
+
+        //print 
         // Duration test2 = timedQuickSort(toSort, RANDOM_ELEMENT);
         // Duration test3 = timedQuickSort(toSort, MEDIAN_OF_THREE_RANDOM_ELEMENTS);
         // Duration test4 = timedQuickSort(toSort, MEDIAN_OF_THREE_ELEMENTS);
