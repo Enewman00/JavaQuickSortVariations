@@ -58,8 +58,11 @@ public class QuickSorter
     }
 
     //partition oon pivot(
+    //elements smaller than the pivot should go to the left of the pivot
     private static void partition()
     {
+
+
         // https://javarevisited.blogspot.com/2014/08/quicksort-sorting-algorithm-in-java-in-place-example.html
     }
 
@@ -72,7 +75,7 @@ public class QuickSorter
     }
 
     //quicksort helper functions
-    private static <E extends Comparable<E>> int pickPivotIndex(ArrayList<E> list, PivotStrategy strategy)
+    private static <E extends Comparable<E>> int pickPivotIndex(ArrayList<E> list, PivotStrategy strategy, int start, int end)
     {
         
         // if it's the first element, just use index 0
