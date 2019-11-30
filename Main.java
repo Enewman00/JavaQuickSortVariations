@@ -33,9 +33,9 @@ public class Main
         //create new arrayList using quickSorter
         ArrayList<Integer> toSort = QuickSorter.generateRandomList(size);
         //create 3 copies of it
-        ArrayList<Integer> toSortRandom = toSort.clone();
-        ArrayList<Integer> toSortMedianRandom = toSort.clone();
-        ArrayList<Integer> toSortMedian = toSort.clone();
+        ArrayList<Integer> toSortRandom = (ArrayList<Integer>) toSort.clone();
+        ArrayList<Integer> toSortMedianRandom = (ArrayList<Integer>) toSort.clone();
+        ArrayList<Integer> toSortMedian = (ArrayList<Integer>) toSort.clone();
 
         //record unsorted array into unsorted.txt
         // file output
@@ -58,8 +58,32 @@ public class Main
 
         //Save duration of sort using FIRST_ELEMENT,RANDOM_ELEMENT, MEDIAN_OF_THREE_RANDOM_ELEMENTS, MEDIAN_OF_THREE_ELEMENTS
         //sort with first element
-        Duration test = timedQuickSort(toSort, FIRST_ELEMENT);
+        Duration firstTime = QuickSorter.timedQuickSort(toSort, QuickSorter.PivotStrategy.MEDIAN_OF_THREE_RANDOM_ELEMENTS);
+        Duration randomTime = QuickSorter.timedQuickSort(toSortRandom, QuickSorter.PivotStrategy.RANDOM_ELEMENT);
+        Duration randomMedTime = QuickSorter.timedQuickSort(toSortMedianRandom, QuickSorter.PivotStrategy.MEDIAN_OF_THREE_RANDOM_ELEMENTS);
+        Duration medianTime = QuickSorter.timedQuickSort(toSortMedian, QuickSorter.PivotStrategy.MEDIAN_OF_THREE_ELEMENTS);
         
+
+        // output report (should be sorted now) to sorted.txt
+        try {
+            // open unsorted.txt (in args) for output
+            File output_file = new File(args[1]);
+            PrintWriter reportOut;
+            reportOut = new PrintWriter(output_file);
+
+            // for each item in the arraylist, output it to the file.
+            reportOut.println("Array Size = " + args[0]);
+            reportOut.println("FIRST_ELEMENT : " + firstTime);
+            reportOut.println("RANDOM_ELEMENT : " + randomTime);
+            reportOut.println("MEDIAN_OF_THREE_RANDOM_ELEMENTS : " + randomMedTime);
+            reportOut.println("MEDIAN_OF_THREE_ELEMENTS : " + medianTime);
+
+            reportOut.close();
+        } catch (Exception e) {
+            System.out.println("Exception: " + e);
+        }
+
+
 
 
 
@@ -89,4 +113,5 @@ public class Main
 
 
     }
+
 }

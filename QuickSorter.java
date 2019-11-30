@@ -42,13 +42,16 @@ public class QuickSorter
     //Remember the quicksort will use the recursive strategy and for small array (<20 elements) use insertion sort methodology. 
     public static <E extends Comparable<E>> Duration timedQuickSort(ArrayList<E> list, PivotStrategy strategy)
     {
-        //pick pivot
-        int pivotIndex = pickPivotIndex(list, strategy);
-        
+        if (list == null || strategy == null)
+        {
+            throw new NullPointerException("illegal null parameter");
+        }
+
         //start the timer
         long startTime = System.nanoTime();
-
-        //recursively sort
+        
+        //start the quick sort
+        quickSortHelper(list, strategy, 0, list.size() - 1);
 
 
         long finishTime = System.nanoTime();
@@ -57,17 +60,93 @@ public class QuickSorter
         return elapsedTime;
     }
 
-    //partition oon pivot(
-    //elements smaller than the pivot should go to the left of the pivot
-    private static void partition()
+    //quick sort recursion helper
+    public static <E extends Comparable<E>> void quickSortHelper(ArrayList<E> list, PivotStrategy strategy, int start, int end)
     {
+        //pick pivot
+        int pivotIndex = pickPivotIndex(list, strategy, start, end);
+
+        //change pivot to the rightmost element
+        swapElements(list, pivotIndex, end);
+        pivotIndex = end;
+
+        //i at start, j at end, loop until i and j cross
+        //inside there, loop until i gets to a element > pivot and j gets to element > pivot
+        //swap those two elements
+        int i = start;
+        int j = end - 1;
+
+        //insertion sort if subarray smaller than 20
+        if (start + 20 > end)
+        {
+            insertionSort(list, start, end);
+            //insertion sort
+            //insertionSort(list, start, end)
+        }
+        else //quicksort
+        {
+            //infinite loop
+            while (true)
+            {
+                //loop through until i gets to a number greater than the pivot
+                while (list.get(i).compareTo(list.get(pivotIndex)) < 0 && i < end - 1)
+                {
+                    i++;
+                }
+                //loop through until j gets to a number less than the pivot
+                while (list.get(j).compareTo(list.get(pivotIndex)) > 0 && j > 0)
+                {
+                    j--;
+                }
+
+                //if i < j, swap them, else break
+                if (i < j)
+                {
+                    swapElements(list, i, j);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            //put the pivot back in the correct spot
+            swapElements(list, i, end);
+            pivotIndex = i;
+
+            //quick sort recursively left and right
+            quickSortHelper(list, strategy, start, pivotIndex - 1);
+            quickSortHelper(list, strategy, pivotIndex + 1, end);
+
+        }
+    }
 
 
-        // https://javarevisited.blogspot.com/2014/08/quicksort-sorting-algorithm-in-java-in-place-example.html
+    // insertion sort for subarrays that are less than 20 items 
+    public static <E extends Comparable<E>> void insertionSort(ArrayList<E> list, int start, int end)
+    {
+        //loop through, get next element to insert in sorted part of array
+        for (int i = start; i <= end; i++)
+        {
+            //value to insert
+            E toInsert = list.get(i);
+
+            //loop through from start to i, find good place for item at i
+            for (int j = start; j < i; j++)
+            {
+                if (toInsert.compareTo(list.get(j)) < 0)
+                {
+                    //insert toInsert at index j and delete old one at j
+                    //E temp = list.get(j);
+                    list.add(j, toInsert);
+                    list.remove(i + 1); //delete old first to not mess up order
+                    break;
+                }
+            }
+        }
     }
 
     //swap function to swap two elements in the arraylist
-    private static void swapElements(ArrayList<E> list, int indexOne, int indexTwo)
+    private static <E extends Comparable<E>> void swapElements(ArrayList<E> list, int indexOne, int indexTwo)
     {
         E temp = list.get(indexOne);
         list.set(indexOne, list.get(indexTwo));
@@ -75,32 +154,24 @@ public class QuickSorter
     }
 
     //quicksort helper functions
+    // (int)(Math.random() * (max - min) + min)
     private static <E extends Comparable<E>> int pickPivotIndex(ArrayList<E> list, PivotStrategy strategy, int start, int end)
     {
         
         // if it's the first element, just use index 0
         if (strategy == PivotStrategy.RANDOM_ELEMENT)
         {
-            return (int) Math.random() * (list.size() - 1);
+            return (int) (Math.random() * (end - start) + start);
         }
         if (strategy == PivotStrategy.MEDIAN_OF_THREE_RANDOM_ELEMENTS)
         {
             //get three different elements
-            int first = (int) Math.random() * (list.size() - 1);
+            int first = (int) (Math.random() * (end - start) + start);
+            int second, third;
+                     
+            second = (int) (Math.random() * (end - start) + start);
 
-            //keep looking for a second element that does not equal the first one
-            do
-            {
-                int second = (int) Math.random() * (list.size() - 1);
-            }
-            while (second == first);
-
-            //keep looking for a third element that does not equal the first two
-            do
-            {
-                int third = (int) Math.random() * (list.size() - 1);
-            }
-            while (third == first || third == second);
+            third = (int) (Math.random() * (end - start) + start);
 
 
             //now the three elements are picked...
@@ -123,9 +194,9 @@ public class QuickSorter
         //median of the first element, the middle element, and the last element
         if (strategy == PivotStrategy.MEDIAN_OF_THREE_ELEMENTS)
         {
-            int first = 0;
-            int second = (list.size() - 1) / 2;
-            int third = list.size() - 1;
+            int first = start;
+            int second = (start + end) / 2;
+            int third = end;
 
 
             //now the three elements are picked...
@@ -148,14 +219,20 @@ public class QuickSorter
             }
         }
         //(else) if it's the first element, just use index 0
-        return 0;
+        return start;
     }
+
+    
 
 
 
     //if negative input, throw IllegalArgumentException
     public static ArrayList<Integer> generateRandomList(int size)
     {
+        if (size < 0)
+        {
+            throw new IllegalArgumentException("size is negative");
+        }
         //create a new arrayList to be filled with random integers
         ArrayList<Integer> randList = new ArrayList<Integer>();
         Random random = new Random();
@@ -176,14 +253,6 @@ public class QuickSorter
         RANDOM_ELEMENT,
         MEDIAN_OF_THREE_RANDOM_ELEMENTS,
         MEDIAN_OF_THREE_ELEMENTS
-    }
-
-    //for testing random list generation
-    public static void main(String[] args)
-    {
-        ArrayList<Integer> testList = generateRandomList(10);
-
-        testList.forEach(n -> System.out.println(n));
     }
 
 }
